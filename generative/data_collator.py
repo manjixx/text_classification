@@ -1,5 +1,6 @@
 import torch
 from typing import List, Dict, Any, Optional, Tuple
+from dataclasses import dataclass
 
 @dataclass
 class SimpleDataCollator:

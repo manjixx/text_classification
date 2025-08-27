@@ -1,48 +1,71 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+判别式文本分类预测（CPU）
+支持 DeepSeek / BERT / RoBERTa 等模型 + 自定义 MLP 分类头
+"""
+import os
 import torch
-from torch import nn
-from torch.utils.data import Dataset, DataLoader
-
-from transformers import (
-    AutoTokenizer,
-    AutoModel,
-    AutoModelForCausalLM,
-    get_linear_schedule_with_warmup,
-    DataCollatorWithPadding,
-)
-from sklearn.metrics import accuracy_score, f1_score, classification_report
-from classifier import DiscriminativeClassifier
-
-# -------------------- 预测（判别式） --------------------
+from transformers import AutoTokenizer, AutoModel
+from classifier import DiscriminativeClassifier  # 自定义分类头
 
 def predict_discriminative(args):
+    """
+    判别式文本分类预测
+    args 必须包含：
+        - model_name_or_path: 预训练模型路径或名称
+        - ckpt: 判别式训练好的 checkpoint 文件夹
+        - label_set_file: 训练时保存的 labels.txt
+        - texts: 待预测文本列表
+        - max_length: 最大文本长度
+        - batch_size: 批量大小
+        - mlp_hidden, dropout: 分类头参数
+    """
     device = torch.device("cpu")
     torch.set_num_threads(max(1, os.cpu_count() or 1))
 
-    # 读取标签
-    if args.label_set_file and os.path.exists(args.label_set_file):
-        with open(args.label_set_file, 'r', encoding='utf-8') as f:
-            labels = [l.strip() for l in f if l.strip()]
-    else:
+    # -------------------- 加载标签 --------------------
+    if not args.label_set_file or not os.path.exists(args.label_set_file):
         raise ValueError("必须提供 label_set_file (训练时保存的 labels.txt)")
+    with open(args.label_set_file, 'r', encoding='utf-8') as f:
+        labels = [l.strip() for l in f if l.strip()]
     label2id = {lab: i for i, lab in enumerate(labels)}
 
+    # -------------------- tokenizer + backbone --------------------
     tok = AutoTokenizer.from_pretrained(args.model_name_or_path, use_fast=True)
     backbone = AutoModel.from_pretrained(args.model_name_or_path)
     hidden_size = getattr(backbone.config, "hidden_size", getattr(backbone.config, "hidden_dim", None))
+    if hidden_size is None:
+        raise ValueError("无法获取 hidden_size，请检查模型类型。")
 
-    model = DiscriminativeClassifier(backbone, hidden_size, num_labels=len(labels), mlp_hidden=args.mlp_hidden, dropout=args.dropout)
-    ckpt = torch.load(os.path.join(args.ckpt, "best_route1.pt"), map_location="cpu")
+    # -------------------- 构建分类模型 --------------------
+    model = DiscriminativeClassifier(
+        backbone,
+        hidden_size,
+        num_labels=len(labels),
+        mlp_hidden=args.mlp_hidden,
+        dropout=args.dropout
+    )
+
+    # -------------------- 加载训练权重 --------------------
+    ckpt_file = os.path.join(args.ckpt, "best_route1.pt")
+    if not os.path.exists(ckpt_file):
+        raise FileNotFoundError(f"Checkpoint 文件不存在: {ckpt_file}")
+    ckpt = torch.load(ckpt_file, map_location="cpu")
     model.load_state_dict(ckpt["state_dict"])
     model.to(device)
     model.eval()
 
-    # 批量编码
-    enc = tok(list(args.texts), max_length=args.max_length, truncation=True, padding=True, return_tensors="pt")
-    with torch.no_grad():
-        out = model(input_ids=enc["input_ids"], attention_mask=enc["attention_mask"])  # logits
-        probs = torch.softmax(out["logits"], dim=-1)
-        conf, pred = torch.max(probs, dim=-1)
+    # -------------------- 批量预测 --------------------
+    batch_size = args.batch_size or 16
+    texts = list(args.texts)
+    for i in range(0, len(texts), batch_size):
+        batch_texts = texts[i:i+batch_size]
+        enc = tok(batch_texts, max_length=args.max_length, truncation=True, padding=True, return_tensors="pt")
+        with torch.no_grad():
+            out = model(input_ids=enc["input_ids"], attention_mask=enc["attention_mask"])
+            probs = torch.softmax(out["logits"], dim=-1)
+            conf, pred = torch.max(probs, dim=-1)
 
-    for t, p, c in zip(args.texts, pred.tolist(), conf.tolist()):
-        print(f"[Pred] text={t} => label={labels[p]}  confidence={c:.4f}")
-
+        for t, p, c in zip(batch_texts, pred.tolist(), conf.tolist()):
+            print(f"[Pred] text={t} => label={labels[p]}  confidence={c:.4f}")

@@ -2,6 +2,14 @@ import torch
 from typing import List, Dict, Any
 from torch.utils.data import Dataset, DataLoader
 
+from transformers import (
+    AutoTokenizer,
+    AutoModel,
+    AutoModelForCausalLM,
+    get_linear_schedule_with_warmup,
+    DataCollatorWithPadding,
+)
+
 # -------------------- 数据集定义（判别式） --------------------
 
 class JsonlClsDataset(Dataset):

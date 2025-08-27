@@ -14,11 +14,10 @@ from transformers import (
 )
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from utils.data_utils import load_jsonl
-from jsonl_sft_dataset import JsonlSFTDataset
-from data_collator import SimpleDataCollator
+from .jsonl_sft_dataset import JsonlSFTDataset
+from .data_collator import SimpleDataCollator
+from .lable_score import label_word_scoring
 from peft import LoraConfig, get_peft_model, PeftModel
-
-
 
 
 # -------------------- 训练循环（LoRA） --------------------

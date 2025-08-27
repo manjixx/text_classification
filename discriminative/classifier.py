@@ -7,6 +7,8 @@ from transformers import (
     get_linear_schedule_with_warmup,
     DataCollatorWithPadding,
 )
+
+from typing import Optional
 # -------------------- 判别式分类器（Route 1） --------------------
 
 class MeanPooler(nn.Module):
