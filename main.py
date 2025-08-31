@@ -38,12 +38,17 @@ def build_argparser():
     p.add_argument('--texts', nargs='+', default=[])
     p.add_argument('--ckpt', type=str)
     p.add_argument('--labels', type=str, default="旅行,支付,物流,售后,账户,其他")
+    p.add_argument("--mlp_hidden", type=int, default=256,
+                   help="Hidden size for MLP classifier in discriminative model")
+    p.add_argument("--dropout", type=float, default=0.1, help="MLP dropout rate")
+    p.add_argument("--weight_decay", type=float, default=0.0, help="Weight decay for optimizer")
 
     # LoRA 专属
     p.add_argument('--lora_rank', type=int, default=8)
     p.add_argument('--lora_alpha', type=int, default=16)
     p.add_argument('--lora_dropout', type=float, default=0.05)
     p.add_argument('--lora_targets', type=str, default='q_proj,v_proj')
+    p.add_argument('--eval_bs', type=int, default=8)
 
     return p
 
@@ -71,4 +76,18 @@ def main():
 
 
 if __name__ == "__main__":
+
+    '''
+    判别式模型训练指令：
+    python main.py --route discriminative --model_type bert-base --model_name_or_path bert-base-chinese --train_file ./data/train.json --valid_file ./data/valid.json --output_dir ./checkpoints/bert_base --max_length 256 --batch_size 16 --epochs 3 --lr 2e-5
+    
+    判别式模型预测指令：
+    python main.py --route discriminative --model_type bert-base --model_name_or_path bert-base-chinese --predict --ckpt ./checkpoints/bert_base/best_model.pt --labels "旅行,支付,物流,售后,账户,其他" --texts "我想查询我的订单状态" "怎么退款"
+    
+    生成式模型训练指令（LoRA微调）：
+    python main.py --route generative --model_type deepseek-1.5b --model_name_or_path deepseek-ai/deepseek-llm-1.5b --train_file ./data/train.json --valid_file ./data/valid.json --output_dir ./checkpoints/deepseek_lora --max_length 512 --batch_size 8 --epochs 3 --lr 1e-4 --lora_rank 8 --lora_alpha 16 --lora_dropout 0.05 --lora_targets "q_proj,v_proj"
+    
+    生成式模型预测指令：
+    python main.py --route generative --model_type deepseek-1.5b --model_name_or_path deepseek-ai/deepseek-llm-1.5b --predict --ckpt ./checkpoints/deepseek_lora --labels "旅行,支付,物流,售后,账户,其他" --texts "我想查询我的订单状态"
+    '''
     main()

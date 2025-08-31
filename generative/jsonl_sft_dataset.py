@@ -10,7 +10,7 @@ from transformers import (
     get_linear_schedule_with_warmup,
     DataCollatorWithPadding,
 )
-import config
+import config.generative as config
 
 class JsonlSFTDataset(Dataset):
     """LoRA 监督微调：把分类任务转成指令+单标签输出的生成任务。"""

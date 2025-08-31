@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="text_classification" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="text_classification" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="text_model" project-jdk-type="Python SDK" />
 </project>

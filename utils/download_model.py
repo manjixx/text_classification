@@ -43,7 +43,7 @@ def download_model(repo_id: str, save_dir: str):
 # ----------------------------
 if __name__ == "__main__":
     # 1. 设置本地保存路径
-    save_dir = r"E:\text_classification\models\original\DeepSeek-R1-Distill-Qwen-1.5B"
+    save_dir = r"/models/original/deepseek-llm-1.5b"
 
     # 2. 输入 Hugging Face Token 并登录
     hf_token = input("请输入 Hugging Face Token: ").strip()
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     print("[INFO] 登录成功")
 
     # 3. 模型仓库 ID
-    repo_id = "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
+    repo_id = "deepseek-ai/deepseek-llm-1.5b"
 
     # 4. 下载模型
     download_model(repo_id, save_dir)

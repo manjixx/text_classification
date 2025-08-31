@@ -41,8 +41,11 @@ class DiscriminativeClassifier(nn.Module):
         for p in self.backbone.parameters():
             p.requires_grad = False
 
-    def forward(self, input_ids, attention_mask, labels=None):
-        outputs = self.backbone(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=False)
+    def forward(self, input_ids, attention_mask, token_type_ids=None, labels=None):
+        outputs = self.backbone(input_ids=input_ids,
+                                attention_mask=attention_mask,
+                                token_type_ids=token_type_ids,
+                                output_hidden_states=False)
         last_hidden = outputs.last_hidden_state  # [B, L, D]
         pooled = self.pooler(last_hidden, attention_mask)  # [B, D]
         pooled = self.dropout(pooled)
@@ -51,3 +54,4 @@ class DiscriminativeClassifier(nn.Module):
         if labels is not None:
             loss = nn.CrossEntropyLoss()(logits, labels)
         return {"loss": loss, "logits": logits}
+

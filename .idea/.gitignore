@@ -6,3 +6,8 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+# 忽略 deepseek_lora 模型文件
+/checkpoints/deepseek_lora/
+/models/original/deepseek_lora
+

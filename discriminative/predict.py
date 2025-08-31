@@ -7,7 +7,8 @@
 import os
 import torch
 from transformers import AutoTokenizer, AutoModel
-from classifier import DiscriminativeClassifier  # 自定义分类头
+from .classifier import DiscriminativeClassifier  # 自定义分类头
+
 
 def predict_discriminative(args):
     """
@@ -21,13 +22,13 @@ def predict_discriminative(args):
         - batch_size: 批量大小
         - mlp_hidden, dropout: 分类头参数
     """
-    device = torch.device("cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     torch.set_num_threads(max(1, os.cpu_count() or 1))
 
     # -------------------- 加载标签 --------------------
-    if not args.label_set_file or not os.path.exists(args.label_set_file):
+    if not args.labels or not os.path.exists(args.labels):
         raise ValueError("必须提供 label_set_file (训练时保存的 labels.txt)")
-    with open(args.label_set_file, 'r', encoding='utf-8') as f:
+    with open(args.labels, 'r', encoding='utf-8') as f:
         labels = [l.strip() for l in f if l.strip()]
     label2id = {lab: i for i, lab in enumerate(labels)}
 
@@ -52,6 +53,16 @@ def predict_discriminative(args):
     if not os.path.exists(ckpt_file):
         raise FileNotFoundError(f"Checkpoint 文件不存在: {ckpt_file}")
     ckpt = torch.load(ckpt_file, map_location="cpu")
+
+    # 处理可能的多GPU训练保存的state_dict
+    if list(ckpt["state_dict"].keys())[0].startswith('module.'):
+        from collections import OrderedDict
+        new_state_dict = OrderedDict()
+        for k, v in ckpt["state_dict"].items():
+            name = k[7:]  # remove 'module.' prefix
+            new_state_dict[name] = v
+        ckpt["state_dict"] = new_state_dict
+
     model.load_state_dict(ckpt["state_dict"])
     model.to(device)
     model.eval()
@@ -60,8 +71,12 @@ def predict_discriminative(args):
     batch_size = args.batch_size or 16
     texts = list(args.texts)
     for i in range(0, len(texts), batch_size):
-        batch_texts = texts[i:i+batch_size]
+        batch_texts = texts[i:i + batch_size]
         enc = tok(batch_texts, max_length=args.max_length, truncation=True, padding=True, return_tensors="pt")
+
+        # 确保输入数据也在相同的设备上
+        enc = {k: v.to(device) for k, v in enc.items()}
+
         with torch.no_grad():
             out = model(input_ids=enc["input_ids"], attention_mask=enc["attention_mask"])
             probs = torch.softmax(out["logits"], dim=-1)

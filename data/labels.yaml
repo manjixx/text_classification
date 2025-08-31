@@ -1,0 +1,266 @@
+labels:
+  - name: 硬件问题
+    children:
+      - name: 屏幕显示
+        children:
+          - 黑屏/不开机
+          - 花屏/闪屏
+          - 触控失灵/延迟
+          - 屏幕碎裂/裂痕
+          - 花屏
+          - 触摸失灵
+      - name: 电池/充电
+        children:
+          - 电池耗电快
+          - 无法充电/充电慢
+          - 发热严重
+          - 电量显示异常
+          - 无法充电
+          - 充电口故障
+      - name: 按键与接口
+        children:
+          - 电源键失灵
+          - 音量键失灵
+          - SIM 卡无法识别
+          - 耳机/USB 接口异常
+      - name: 摄像头与音频
+        children:
+          - 相机无法打开
+          - 拍照模糊/对焦失败
+          - 无声音/扬声器失效
+          - 麦克风失效
+          - 黑点/污渍
+          - 无法开启
+          - 外放异常
+          - 听筒异常
+
+  - name: 系统问题
+    children:
+      - name: 系统崩溃
+        children:
+          - 死机
+          - 卡logo
+          - 开机循环
+      - name: 应用异常
+        children:
+          - 闪退
+          - 卡死
+          - 商店异常
+      - name: 功能限制
+        children:
+          - 儿童模式异常
+      - name: 更新异常
+        children:
+          - 安装失败
+          - 功能异常
+      - name: 启动与系统更新
+        children:
+          - 系统无法启动
+          - 升级失败/卡升级
+          - 系统版本异常
+      - name: 应用与性能
+        children:
+          - APP 闪退/无法安装
+          - 手机卡顿/死机
+          - 存储空间不足
+          - 系统频繁重启
+      - name: 网络与通信
+        children:
+          - 无法连接 Wi-Fi
+          - 移动数据异常
+          - 信号差/无信号
+          - 蓝牙连接失败
+
+  - name: 性能问题
+    children:
+      - name: 发热
+        children:
+          - 高温
+      - name: 耗电快
+        children:
+          - 待机掉电
+          - 异常关机
+          - 自动关机
+      - name: 卡顿/慢
+        children:
+          - 内存不足
+          - 切换延迟
+
+  - name: 存储问题
+    children:
+      - name: 内存/存储
+        children:
+          - 空间不足
+
+  - name: 网络问题
+    children:
+      - name: WiFi连接
+        children:
+          - 频繁断开
+          - 无法搜索
+      - name: 蜂窝网络
+        children:
+          - 信号弱
+          - SIM卡异常
+      - name: 蓝牙
+        children:
+          - 无法连接
+          - 频繁断开
+
+  - name: 通话问题
+    children:
+      - name: 通话质量
+        children:
+          - 麦克风无声
+          - 声音异常
+      - name: 无法拨打
+        children:
+          - 网络问题
+      - name: 短信问题
+        children:
+          - 接收延迟
+
+  - name: 安全问题
+    children:
+      - name: 解锁异常
+        children:
+          - 指纹识别失败
+          - 人脸识别失败
+      - name: 支付异常
+        children:
+          - 指纹支付失败
+          - 扫码失败
+      - name: 防盗问题
+        children:
+          - 无法定位
+
+  - name: 使用问题
+    children:
+      - name: 账户与权限
+        children:
+          - 无法登录账号
+          - 密码/指纹/面部识别失效
+          - 权限设置异常
+      - name: 功能异常
+        children:
+          - 短信收发异常
+          - 来电异常/无法拨打电话
+          - GPS 定位不准
+      - name: 其他体验问题
+        children:
+          - 广告/弹窗过多
+          - UI 显示错误
+          - 声音/亮度调节异常
+
+  - name: 网络连接问题
+    children:
+      - name: 移动网络
+        children:
+          - 无法使用 4G/5G
+          - 网络频繁掉线
+          - 数据流量无法开启
+      - name: Wi-Fi
+        children:
+          - Wi-Fi 无法搜索
+          - Wi-Fi 自动断开
+          - Wi-Fi 速度慢
+      - name: 蓝牙与热点
+        children:
+          - 蓝牙无法搜索
+          - 蓝牙断连
+          - 热点无法开启
+
+  - name: 通话与短信
+    children:
+      - name: 通话
+        children:
+          - 无法拨打电话
+          - 无法接听电话
+          - 对方听不到声音
+          - 回声/杂音
+      - name: 短信
+        children:
+          - 无法发送短信
+          - 无法接收短信
+          - 短信延迟
+          - 短信内容乱码
+
+  - name: 多媒体问题
+    children:
+      - name: 音频
+        children:
+          - 播放无声音
+          - 音质失真
+          - 耳机无声
+      - name: 视频
+        children:
+          - 视频播放卡顿
+          - 无法播放视频
+          - 视频花屏
+      - name: 相机与拍照
+        children:
+          - 拍照黑屏
+          - 视频录制失败
+          - 相机画质差
+
+  - name: 存储与文件
+    children:
+      - name: 存储空间
+        children:
+          - 内存不足提示
+          - 存储容量异常
+          - 无法识别存储卡
+      - name: 文件管理
+        children:
+          - 文件无法打开
+          - 文件传输失败
+          - 下载内容丢失
+
+  - name: 外设与配件
+    children:
+      - name: SIM/卡槽
+        children:
+          - SIM 卡无法识别
+          - SIM 卡频繁掉线
+      - name: 充电器/数据线
+        children:
+          - 原装充电器无法使用
+          - 数据线接触不良
+      - name: 其他配件
+        children:
+          - 耳机异常
+          - OTG 无法识别
+
+  - name: 安全与隐私
+    children:
+      - name: 解锁方式
+        children:
+          - 指纹识别失效
+          - 人脸识别失效
+          - 密码无法设置
+      - name: 隐私权限
+        children:
+          - 权限无法授权
+          - 应用过度申请权限
+      - name: 病毒与恶意软件
+        children:
+          - 系统报毒
+          - 异常流量消耗
+
+  - name: 账户与服务
+    children:
+      - name: 系统账户
+        children:
+          - 无法登录账号
+          - 账号冻结
+          - 账号丢失
+      - name: 云服务
+        children:
+          - 云备份失败
+          - 云同步异常
+          - 数据丢失
+      - name: 应用商店
+        children:
+          - 无法下载应用
+          - 无法更新应用
+          - 应用审核异常

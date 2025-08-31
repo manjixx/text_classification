@@ -163,15 +163,20 @@ export OMP_NUM_THREADS=$(nproc) ; export MKL_NUM_THREADS=$(nproc)
 
 ```bash
 # 训练
-python deepseek_text_classification_cpu.py \
+python main.py \
   --route discriminative \
-  --model_name_or_path <your-deepseek-small-model> \
+  --model_type bert-base \  # 添加了这个必填参数
+  --model_name_or_path ./models/original/bert-base-chinese \  # 修正了拼写错误：orignal → original
   --train_file ./data/train.jsonl \
   --valid_file ./data/valid.jsonl \
   --test_file ./data/test.jsonl \
-  --label_file ./data/labels.yaml \
+  --labels ./data/labels.yaml \
   --output_dir ./checkpoints/route1 \
-  --max_length 256 --batch_size 16 --epochs 10 --lr 1e-3 --mlp_hidden 256
+  --max_length 256 \
+  --batch_size 16 \
+  --epochs 10 \
+  --lr 1e-3 \
+  --mlp_hidden 256
 
 # 推理
 python deepseek_text_classification_cpu.py \
